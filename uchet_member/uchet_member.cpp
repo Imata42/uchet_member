@@ -1,410 +1,391 @@
-#include <iostream>     // Подключение библиотеки для ввода/вывода (cin, cout)
-#include <conio.h>      // Подключение библиотеки для _getch() (ожидание нажатия клавиши)
-#include <fstream>      // Подключение библиотеки для работы с файлами (ifstream, ofstream)
-#include <string>       // Подключение библиотеки для работы со строками (string)
-#include <Windows.h>    // Подключение Windows API для работы с консолью (цвета, кодировка)
-#include "uchet.h"      // Подключение пользовательского заголовочного файла со структурой Member и цветами
+#include <iostream>
+#include <conio.h>
+#include <fstream>
+#include <string>
+#include <Windows.h>
+#include "uchet.h"
 
-using namespace std;    // Использование стандартного пространства имён
+using namespace std;
 
-Member* firstMember = nullptr;  // Глобальный указатель на первый элемент связного списка (изначально пустой)
+Member* firstMember = nullptr;
 
-// Функция авторизации пользователя
 bool LOGIN_IN() {
-    string login;       // Переменная для хранения введённого логина
-    string password;    // Переменная для хранения введённого пароля
+    string login;
+    string password;
 
-    while (true) {      // Бесконечный цикл до успешного входа
-        system("cls");  // Очистка экрана консоли
-        SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета текста
-        cout << "ВХОД В СИСТЕМУ\n\n";       // Вывод заголовка
-        ResetColor();   // Сброс цвета текста на стандартный
+    while (true) {
+        system("cls");
+        SetTextColor(crt::COLOR_YELLOW);
+        cout << "ВХОД В СИСТЕМУ\n\n";
+        ResetColor();
 
-        SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-        cout << "Введите логин: ";              // Запрос логина
-        ResetColor();                           // Сброс цвета
-        getline(cin, login);                    // Ввод строки логина
+        SetTextColor(crt::COLOR_LIGHT_CYAN);
+        cout << "Введите логин: ";
+        ResetColor();
+        getline(cin, login);
 
-        SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-        cout << "Введите пароль: ";             // Запрос пароля
-        ResetColor();                           // Сброс цвета
-        getline(cin, password);                 // Ввод строки пароля
+        SetTextColor(crt::COLOR_LIGHT_CYAN);
+        cout << "Введите пароль: ";
+        ResetColor();
+        getline(cin, password);
 
-        // Проверка введённых данных с жёстко заданными учётными данными
         if (login == "admin" && password == "12345") {
-            SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-            cout << "\nУспешный вход! Добро пожаловать, " << login << "." << endl;  // Сообщение об успехе
-            ResetColor();                           // Сброс цвета
-            _getch();                               // Ожидание нажатия любой клавиши
-            return true;                            // Возврат успешного результата
+            SetTextColor(crt::COLOR_LIGHT_GREEN);
+            cout << "\nУспешный вход! Добро пожаловать, " << login << "." << endl;
+            ResetColor();
+            _getch();
+            return true;
         }
         else {
-            SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-            cout << "\nОшибка: Неверный логин или пароль." << endl;   // Сообщение об ошибке
-            cout << "Попробуйте еще раз.\n";        // Предложение повторить попытку
-            ResetColor();                           // Сброс цвета
-            cout << "Нажмите любую клавишу...";     // Приглашение нажать клавишу
-            _getch();                               // Ожидание нажатия
+            SetTextColor(crt::COLOR_LIGHT_RED);
+            cout << "\nОшибка: Неверный логин или пароль." << endl;
+            cout << "Попробуйте еще раз.\n";
+            ResetColor();
+            cout << "Нажмите любую клавишу...";
+            _getch();
         }
     }
 }
 
-// Функция добавления нового члена общества
 void AddData() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_LIGHT_MAGENTA);     // Установка ярко-пурпурного цвета
-    cout << "----ДОБАВИТЬ ЧЛЕНА ОБЩЕСТВА----\n\n";   // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_LIGHT_MAGENTA);
+    cout << "----ДОБАВИТЬ ЧЛЕНА ОБЩЕСТВА----\n\n";
+    ResetColor();
 
-    Member* member = new Member();  // Выделение памяти под нового члена (динамическая память)
+    Member* member = new Member();
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Номер членского билета: ";  // Запрос номера билета
-    ResetColor();                        // Сброс цвета
-    cin >> member->ticketNumber;         // Ввод числа в поле ticketNumber
-    cin.ignore();                        // Очистка буфера ввода (удаление символа новой строки)
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Номер членского билета: ";
+    ResetColor();
+    cin >> member->ticketNumber;
+    cin.ignore();
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Фамилия (до 15 символов): "; // Запрос фамилии
-    ResetColor();                        // Сброс цвета
-    getline(cin, member->lastName);      // Ввод строки фамилии
-    if (member->lastName.length() > 15)  // Если длина больше 15 символов
-        member->lastName = member->lastName.substr(0, 15);  // Обрезать до 15 символов
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Фамилия (до 15 символов): ";
+    ResetColor();
+    getline(cin, member->lastName);
+    if (member->lastName.length() > 15) member->lastName = member->lastName.substr(0, 15);
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Имя (до 15 символов): ";    // Запрос имени
-    ResetColor();                        // Сброс цвета
-    getline(cin, member->firstName);     // Ввод строки имени
-    if (member->firstName.length() > 15) // Если длина больше 15 символов
-        member->firstName = member->firstName.substr(0, 15);  // Обрезать до 15 символов
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Имя (до 15 символов): ";
+    ResetColor();
+    getline(cin, member->firstName);
+    if (member->firstName.length() > 15) member->firstName = member->firstName.substr(0, 15);
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Отчество (до 15 символов): "; // Запрос отчества
-    ResetColor();                        // Сброс цвета
-    getline(cin, member->patronymic);    // Ввод строки отчества
-    if (member->patronymic.length() > 15) // Если длина больше 15 символов
-        member->patronymic = member->patronymic.substr(0, 15);  // Обрезать до 15 символов
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Отчество (до 15 символов): ";
+    ResetColor();
+    getline(cin, member->patronymic);
+    if (member->patronymic.length() > 15) member->patronymic = member->patronymic.substr(0, 15);
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Дата вступления (ДД.ММ.ГГГГ): "; // Запрос даты вступления
-    ResetColor();                        // Сброс цвета
-    getline(cin, member->joinDate);      // Ввод строки даты
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Дата вступления (ДД.ММ.ГГГГ): ";
+    ResetColor();
+    getline(cin, member->joinDate);
 
-    SetTextColor(crt::COLOR_MAGENTA);    // Установка пурпурного цвета
-    cout << "Общая сумма уплаченных взносов: "; // Запрос суммы взносов
-    ResetColor();                        // Сброс цвета
-    cin >> member->totalFees;            // Ввод вещественного числа
+    SetTextColor(crt::COLOR_MAGENTA);
+    cout << "Общая сумма уплаченных взносов: ";
+    ResetColor();
+    cin >> member->totalFees;
 
-    member->next = firstMember;  // Новый элемент указывает на текущий первый элемент
-    firstMember = member;        // Теперь новый элемент становится первым
+    member->next = firstMember;
+    firstMember = member;
 
-    SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-    cout << "\nЧлен общества успешно добавлен!" << endl;   // Сообщение об успехе
-    ResetColor();                           // Сброс цвета
-    _getch();                               // Ожидание нажатия клавиши
+    SetTextColor(crt::COLOR_LIGHT_GREEN);
+    cout << "\nЧлен общества успешно добавлен!" << endl;
+    ResetColor();
+    _getch();
 }
 
-// Функция вывода всех членов общества
 void PrintData() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета
-    cout << "----СПИСОК ЧЛЕНОВ ОБЩЕСТВА----\n\n";   // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_YELLOW);
+    cout << "----СПИСОК ЧЛЕНОВ ОБЩЕСТВА----\n\n";
+    ResetColor();
 
-    if (firstMember == nullptr) {   // Если список пуст
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "Список пуст!\n";               // Сообщение о пустоте
-        ResetColor();                           // Сброс цвета
+    if (firstMember == nullptr) {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "Список пуст!\n";
+        ResetColor();
     }
     else {
-        Member* current = firstMember;  // Указатель для прохода по списку, начинаем с первого
-        int count = 0;                  // Счётчик элементов
-        while (current != nullptr) {    // Пока не дошли до конца списка
-            SetTextColor(crt::COLOR_LIGHT_GREEN);    // Установка ярко-зелёного цвета
-            cout << "[" << ++count << "] ";          // Вывод порядкового номера
-            ResetColor();                            // Сброс цвета
-            cout << "Номер билета: " << current->ticketNumber << endl;   // Вывод номера билета
-            cout << "    ФИО: " << current->lastName << " "              // Вывод ФИО
+        Member* current = firstMember;
+        int count = 0;
+        while (current != nullptr) {
+            SetTextColor(crt::COLOR_LIGHT_GREEN);
+            cout << "[" << ++count << "] ";
+            ResetColor();
+            cout << "Номер билета: " << current->ticketNumber << endl;
+            cout << "    ФИО: " << current->lastName << " "
                 << current->firstName << " " << current->patronymic << endl;
-            cout << "    Дата вступления: " << current->joinDate << endl; // Вывод даты
-            SetTextColor(crt::COLOR_LIGHT_CYAN);     // Установка ярко-голубого цвета
-            cout << "    Сумма взносов: " << current->totalFees << " руб." << endl; // Вывод суммы
-            ResetColor();                            // Сброс цвета
-            cout << "-------------------\n";         // Разделительная линия
-            current = current->next;                 // Переход к следующему элементу
+            cout << "    Дата вступления: " << current->joinDate << endl;
+            SetTextColor(crt::COLOR_LIGHT_CYAN);
+            cout << "    Сумма взносов: " << current->totalFees << " руб." << endl;
+            ResetColor();
+            cout << "-------------------\n";
+            current = current->next;
         }
     }
-    cout << "\nНажмите любую клавишу...";   // Приглашение нажать клавишу
-    _getch();                               // Ожидание нажатия
+    cout << "\nНажмите любую клавишу...";
+    _getch();
 }
 
-// Функция поиска члена по номеру билета
 void SearchByTicketNumber() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета
-    cout << "----ПОИСК ПО НОМЕРУ БИЛЕТА----\n\n";   // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_YELLOW);
+    cout << "----ПОИСК ПО НОМЕРУ БИЛЕТА----\n\n";
+    ResetColor();
 
-    int number;     // Переменная для номера билета
-    SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-    cout << "Введите номер билета: ";       // Запрос номера
-    ResetColor();                           // Сброс цвета
-    cin >> number;                          // Ввод числа
+    int number;
+    SetTextColor(crt::COLOR_LIGHT_CYAN);
+    cout << "Введите номер билета: ";
+    ResetColor();
+    cin >> number;
 
-    Member* current = firstMember;  // Указатель для прохода по списку
-    bool found = false;             // Флаг нахождения элемента
+    Member* current = firstMember;
+    bool found = false;
 
-    while (current != nullptr) {    // Пока не конец списка
-        if (current->ticketNumber == number) {  // Если номер совпадает
-            SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-            cout << "\nНайден член общества:\n";    // Сообщение о находке
-            ResetColor();                           // Сброс цвета
-            cout << "Номер билета: " << current->ticketNumber << endl;  // Вывод номера
-            cout << "ФИО: " << current->lastName << " "                  // Вывод ФИО
+    while (current != nullptr) {
+        if (current->ticketNumber == number) {
+            SetTextColor(crt::COLOR_LIGHT_GREEN);
+            cout << "\nНайден член общества:\n";
+            ResetColor();
+            cout << "Номер билета: " << current->ticketNumber << endl;
+            cout << "ФИО: " << current->lastName << " "
                 << current->firstName << " " << current->patronymic << endl;
-            cout << "Дата вступления: " << current->joinDate << endl;    // Вывод даты
-            SetTextColor(crt::COLOR_LIGHT_CYAN);     // Установка ярко-голубого цвета
-            cout << "Сумма взносов: " << current->totalFees << " руб.\n"; // Вывод суммы
-            ResetColor();                            // Сброс цвета
-            found = true;        // Устанавливаем флаг, что нашли
-            break;               // Выход из цикла (нужен только первый найденный)
+            cout << "Дата вступления: " << current->joinDate << endl;
+            SetTextColor(crt::COLOR_LIGHT_CYAN);
+            cout << "Сумма взносов: " << current->totalFees << " руб.\n";
+            ResetColor();
+            found = true;
+            break;
         }
-        current = current->next; // Переход к следующему элементу
+        current = current->next;
     }
 
-    if (!found) {   // Если ничего не нашли
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "\nЧлен с таким номером не найден!\n";   // Сообщение об ошибке
-        ResetColor();                           // Сброс цвета
+    if (!found) {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "\nЧлен с таким номером не найден!\n";
+        ResetColor();
     }
-    cout << "\nНажмите любую клавишу...";   // Приглашение нажать клавишу
-    _getch();                               // Ожидание нажатия
+    cout << "\nНажмите любую клавишу...";
+    _getch();
 }
 
-// Функция поиска членов по фамилии
 void SearchByLastName() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета
-    cout << "=== ПОИСК ПО ФАМИЛИИ ===\n\n";    // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_YELLOW);
+    cout << "=== ПОИСК ПО ФАМИЛИИ ===\n\n";
+    ResetColor();
 
-    string lastName;    // Переменная для искомой фамилии
-    SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-    cout << "Введите фамилию: ";            // Запрос фамилии
-    ResetColor();                           // Сброс цвета
-    cin >> lastName;                        // Ввод строки
+    string lastName;
+    SetTextColor(crt::COLOR_LIGHT_CYAN);
+    cout << "Введите фамилию: ";
+    ResetColor();
+    cin >> lastName;
 
-    Member* current = firstMember;  // Указатель для прохода по списку
-    bool found = false;             // Флаг нахождения элементов
-    int count = 0;                  // Счётчик найденных
+    Member* current = firstMember;
+    bool found = false;
+    int count = 0;
 
-    while (current != nullptr) {    // Пока не конец списка
-        if (current->lastName == lastName) {   // Если фамилия совпадает
-            SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-            cout << "\n[" << ++count << "] ";       // Вывод порядкового номера
-            ResetColor();                           // Сброс цвета
-            cout << "Номер билета: " << current->ticketNumber << endl;  // Вывод номера
-            cout << "    ФИО: " << current->lastName << " "              // Вывод ФИО
+    while (current != nullptr) {
+        if (current->lastName == lastName) {
+            SetTextColor(crt::COLOR_LIGHT_GREEN);
+            cout << "\n[" << ++count << "] ";
+            ResetColor();
+            cout << "Номер билета: " << current->ticketNumber << endl;
+            cout << "    ФИО: " << current->lastName << " "
                 << current->firstName << " " << current->patronymic << endl;
-            cout << "    Дата вступления: " << current->joinDate << endl;    // Вывод даты
-            SetTextColor(crt::COLOR_LIGHT_CYAN);     // Установка ярко-голубого цвета
-            cout << "    Сумма взносов: " << current->totalFees << " руб.\n"; // Вывод суммы
-            ResetColor();                            // Сброс цвета
-            found = true;        // Устанавливаем флаг, что нашли хотя бы одного
+            cout << "    Дата вступления: " << current->joinDate << endl;
+            SetTextColor(crt::COLOR_LIGHT_CYAN);
+            cout << "    Сумма взносов: " << current->totalFees << " руб.\n";
+            ResetColor();
+            found = true;
         }
-        current = current->next; // Переход к следующему элементу
+        current = current->next;
     }
 
-    if (!found) {   // Если ничего не нашли
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "\nЧлены с такой фамилией не найдены!\n";   // Сообщение об ошибке
-        ResetColor();                           // Сброс цвета
+    if (!found) {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "\nЧлены с такой фамилией не найдены!\n";
+        ResetColor();
     }
-    cout << "\nНажмите любую клавишу...";   // Приглашение нажать клавишу
-    _getch();                               // Ожидание нажатия
+    cout << "\nНажмите любую клавишу...";
+    _getch();
 }
 
-// Функция поиска членов по дате вступления
 void SearchByJoinDate() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета
-    cout << "----ПОИСК ПО ДАТЕ ВСТУПЛЕНИЯ----\n\n";   // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_YELLOW);
+    cout << "----ПОИСК ПО ДАТЕ ВСТУПЛЕНИЯ----\n\n";
+    ResetColor();
 
-    string date;    // Переменная для искомой даты
-    SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-    cout << "Введите дату (ДД.ММ.ГГГГ): ";  // Запрос даты
-    ResetColor();                           // Сброс цвета
-    cin >> date;                            // Ввод строки
+    string date;
+    SetTextColor(crt::COLOR_LIGHT_CYAN);
+    cout << "Введите дату (ДД.ММ.ГГГГ): ";
+    ResetColor();
+    cin >> date;
 
-    Member* current = firstMember;  // Указатель для прохода по списку
-    bool found = false;             // Флаг нахождения элементов
-    int count = 0;                  // Счётчик найденных
+    Member* current = firstMember;
+    bool found = false;
+    int count = 0;
 
-    while (current != nullptr) {    // Пока не конец списка
-        if (current->joinDate == date) {   // Если дата совпадает
-            SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-            cout << "\n[" << ++count << "] ";       // Вывод порядкового номера
-            ResetColor();                           // Сброс цвета
-            cout << "Номер билета: " << current->ticketNumber << endl;  // Вывод номера
-            cout << "    ФИО: " << current->lastName << " "              // Вывод ФИО
+    while (current != nullptr) {
+        if (current->joinDate == date) {
+            SetTextColor(crt::COLOR_LIGHT_GREEN);
+            cout << "\n[" << ++count << "] ";
+            ResetColor();
+            cout << "Номер билета: " << current->ticketNumber << endl;
+            cout << "    ФИО: " << current->lastName << " "
                 << current->firstName << " " << current->patronymic << endl;
-            cout << "    Дата вступления: " << current->joinDate << endl;    // Вывод даты
-            SetTextColor(crt::COLOR_LIGHT_CYAN);     // Установка ярко-голубого цвета
-            cout << "    Сумма взносов: " << current->totalFees << " руб.\n"; // Вывод суммы
-            ResetColor();                            // Сброс цвета
-            found = true;        // Устанавливаем флаг, что нашли хотя бы одного
+            cout << "    Дата вступления: " << current->joinDate << endl;
+            SetTextColor(crt::COLOR_LIGHT_CYAN);
+            cout << "    Сумма взносов: " << current->totalFees << " руб.\n";
+            ResetColor();
+            found = true;
         }
-        current = current->next; // Переход к следующему элементу
+        current = current->next;
     }
 
-    if (!found) {   // Если ничего не нашли
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "\nЧлены с такой датой вступления не найдены!\n";   // Сообщение об ошибке
-        ResetColor();                           // Сброс цвета
+    if (!found) {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "\nЧлены с такой датой вступления не найдены!\n";
+        ResetColor();
     }
-    cout << "\nНажмите любую клавишу...";   // Приглашение нажать клавишу
-    _getch();                               // Ожидание нажатия
+    cout << "\nНажмите любую клавишу...";
+    _getch();
 }
 
-// Функция удаления члена по номеру билета
 void DeleteData() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_YELLOW);    // Установка жёлтого цвета
-    cout << "----УДАЛЕНИЕ ЧЛЕНА ОБЩЕСТВА----\n\n";   // Заголовок
-    ResetColor();   // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_YELLOW);
+    cout << "----УДАЛЕНИЕ ЧЛЕНА ОБЩЕСТВА----\n\n";
+    ResetColor();
 
-    int number;     // Переменная для номера билета
-    SetTextColor(crt::COLOR_LIGHT_RED);  // Установка ярко-красного цвета
-    cout << "Введите номер билета для удаления: ";   // Запрос номера
-    ResetColor();                        // Сброс цвета
-    cin >> number;                       // Ввод числа
+    int number;
+    SetTextColor(crt::COLOR_LIGHT_RED);
+    cout << "Введите номер билета для удаления: ";
+    ResetColor();
+    cin >> number;
 
-    if (firstMember == nullptr) {        // Если список пуст
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "Список пуст!\n";               // Сообщение об ошибке
-        ResetColor();                           // Сброс цвета
-        _getch();                               // Ожидание нажатия
-        return;                                 // Выход из функции
+    if (firstMember == nullptr) {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "Список пуст!\n";
+        ResetColor();
+        _getch();
+        return;
     }
 
-    // Удаление первого элемента списка
     if (firstMember->ticketNumber == number) {
-        Member* temp = firstMember;      // Запоминаем указатель на удаляемый элемент
-        firstMember = firstMember->next; // Перенаправляем начало списка на следующий элемент
-        delete temp;                     // Освобождаем память удаляемого элемента
-        SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-        cout << "\nЧлен успешно удален!\n";     // Сообщение об успехе
-        ResetColor();                           // Сброс цвета
-        _getch();                               // Ожидание нажатия
-        return;                                 // Выход из функции
+        Member* temp = firstMember;
+        firstMember = firstMember->next;
+        delete temp;
+        SetTextColor(crt::COLOR_LIGHT_GREEN);
+        cout << "\nЧлен успешно удален!\n";
+        ResetColor();
+        _getch();
+        return;
     }
 
-    // Поиск элемента для удаления (не первого)
-    Member* current = firstMember;      // Начинаем с первого элемента
+    Member* current = firstMember;
     while (current->next != nullptr && current->next->ticketNumber != number) {
-        current = current->next;        // Переход к следующему элементу
+        current = current->next;
     }
 
-    if (current->next != nullptr) {     // Если нашли элемент для удаления
-        Member* temp = current->next;   // Запоминаем указатель на удаляемый элемент
-        current->next = current->next->next;  // Перенаправляем указатель, пропуская удаляемый
-        delete temp;                    // Освобождаем память удаляемого элемента
-        SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-        cout << "\nЧлен успешно удален!\n";     // Сообщение об успехе
-        ResetColor();                           // Сброс цвета
+    if (current->next != nullptr) {
+        Member* temp = current->next;
+        current->next = current->next->next;
+        delete temp;
+        SetTextColor(crt::COLOR_LIGHT_GREEN);
+        cout << "\nЧлен успешно удален!\n";
+        ResetColor();
     }
-    else {                              // Если не нашли элемент с таким номером
-        SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-        cout << "\nЧлен с таким номером не найден!\n";   // Сообщение об ошибке
-        ResetColor();                           // Сброс цвета
+    else {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "\nЧлен с таким номером не найден!\n";
+        ResetColor();
     }
-    _getch();   // Ожидание нажатия клавиши
+    _getch();
 }
 
-// Функция сохранения данных в файл
 bool SaveData() {
-    ofstream file("members.txt");   // Открываем файл для записи
-    if (!file.is_open()) return false;  // Если не удалось открыть - возвращаем false
+    ofstream file("members.txt");
+    if (!file.is_open()) return false;
 
-    Member* current = firstMember;  // Указатель для прохода по списку
-    while (current != nullptr) {    // Пока не конец списка
-        // Записываем данные в файл, разделяя поля символом '|'
+    Member* current = firstMember;
+    while (current != nullptr) {
         file << current->ticketNumber << "|"
             << current->lastName << "|"
             << current->firstName << "|"
             << current->patronymic << "|"
             << current->joinDate << "|"
             << current->totalFees << "\n";
-        current = current->next;    // Переход к следующему элементу
+        current = current->next;
     }
-    file.close();   // Закрываем файл
-    return true;    // Возвращаем успешный результат
+    file.close();
+    return true;
 }
 
-// Функция загрузки данных из файла
 bool LoadData() {
-    ifstream file("members.txt");   // Открываем файл для чтения
-    if (!file.is_open()) {          // Если файл не существует
-        return true;                // Возвращаем true (это нормально для первого запуска)
+    ifstream file("members.txt");
+    if (!file.is_open()) {
+        return true;
     }
 
-    // Очищаем текущий список перед загрузкой новых данных
     while (firstMember != nullptr) {
-        Member* temp = firstMember;     // Запоминаем указатель на удаляемый элемент
-        firstMember = firstMember->next; // Переходим к следующему элементу
-        delete temp;                    // Освобождаем память
+        Member* temp = firstMember;
+        firstMember = firstMember->next;
+        delete temp;
     }
 
-    string line;    // Переменная для хранения строки из файла
-    while (getline(file, line)) {   // Читаем файл построчно
-        if (line.empty()) continue; // Пропускаем пустые строки
+    string line;
+    while (getline(file, line)) {
+        if (line.empty()) continue;
 
-        Member* member = new Member();  // Выделяем память под нового члена
+        Member* member = new Member();
 
-        size_t pos = 0;         // Текущая позиция в строке
-        string token;           // Переменная для хранения очередного поля
+        size_t pos = 0;
+        string token;
 
-        // Лямбда-функция для получения следующего поля из строки (разделитель '|')
         auto getNextField = [&]() {
-            size_t delimiterPos = line.find('|', pos);  // Ищем разделитель
-            if (delimiterPos == string::npos) {         // Если разделитель не найден
-                token = line.substr(pos);               // Берём всё до конца строки
-                pos = line.length();                    // Устанавливаем позицию в конец
+            size_t delimiterPos = line.find('|', pos);
+            if (delimiterPos == string::npos) {
+                token = line.substr(pos);
+                pos = line.length();
             }
             else {
-                token = line.substr(pos, delimiterPos - pos); // Берём часть до разделителя
-                pos = delimiterPos + 1;                       // Перемещаем позицию за разделитель
+                token = line.substr(pos, delimiterPos - pos);
+                pos = delimiterPos + 1;
             }
-            return token;   // Возвращаем полученное поле
-        };
+            return token;
+            };
 
-        try {   // Пытаемся преобразовать строки в нужные типы данных
-            member->ticketNumber = stoi(getNextField());   // Номер билета (int)
-            member->lastName = getNextField();             // Фамилия (string)
-            member->firstName = getNextField();            // Имя (string)
-            member->patronymic = getNextField();           // Отчество (string)
-            member->joinDate = getNextField();             // Дата вступления (string)
-            member->totalFees = stod(getNextField());      // Сумма взносов (double)
+        try {
+            member->ticketNumber = stoi(getNextField());
+            member->lastName = getNextField();
+            member->firstName = getNextField();
+            member->patronymic = getNextField();
+            member->joinDate = getNextField();
+            member->totalFees = stod(getNextField());
 
-            member->next = firstMember;    // Новый элемент указывает на текущий первый
-            firstMember = member;          // Новый элемент становится первым
+            member->next = firstMember;
+            firstMember = member;
         }
-        catch (...) {   // Если произошла ошибка при преобразовании
-            delete member;  // Удаляем некорректный элемент
-            continue;       // Пропускаем эту строку и продолжаем чтение
+        catch (...) {
+            delete member;
+            continue;
         }
     }
-    file.close();   // Закрываем файл
-    return true;    // Возвращаем успешный результат
+    file.close();
+    return true;
 }
 
-// Функция вывода справки
 void PrintHelp() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
-    cout << "----СПРАВКА----\n\n";          // Заголовок
-    ResetColor();                           // Сброс цвета
+    system("cls");
+    SetTextColor(crt::COLOR_LIGHT_CYAN);
+    cout << "----СПРАВКА----\n\n";
+    ResetColor();
     cout << "1. Добавить члена общества\n";
     cout << "2. Показать всех членов\n";
     cout << "3. Поиск по номеру билета\n";
@@ -413,19 +394,18 @@ void PrintHelp() {
     cout << "6. Удалить по номеру билета\n";
     cout << "7. Сохранить в файл\n";
     cout << "8. Выход (автосохранение)\n\n";
-    _getch();   // Ожидание нажатия клавиши
+    _getch();
 }
 
-// Функция отображения главного меню и получения выбора пользователя
 char MainMenu() {
-    system("cls");  // Очистка экрана
-    SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-    cout << "УЧЕТ ЧЛЕНОВ ОБЩЕСТВА ОХОТНИКОВ-РЫБОЛОВОВ\n\n";   // Название программы
-    ResetColor();                           // Сброс цвета
-    SetTextColor(crt::COLOR_GREEN);         // Установка зелёного цвета
-    cout << "====================================\n";   // Разделительная линия
-    ResetColor();                           // Сброс цвета
-    SetTextColor(crt::COLOR_LIGHT_CYAN);    // Установка ярко-голубого цвета
+    system("cls");
+    SetTextColor(crt::COLOR_LIGHT_GREEN);
+    cout << "УЧЕТ ЧЛЕНОВ ОБЩЕСТВА ОХОТНИКОВ-РЫБОЛОВОВ\n\n";
+    ResetColor();
+    SetTextColor(crt::COLOR_GREEN);
+    cout << "====================================\n";
+    ResetColor();
+    SetTextColor(crt::COLOR_LIGHT_CYAN);
     cout << "1. Добавить члена\n";
     cout << "2. Показать всех членов\n";
     cout << "3. Поиск по номеру билета\n";
@@ -434,72 +414,69 @@ char MainMenu() {
     cout << "6. Удалить по номеру билета\n";
     cout << "7. Сохранить\n";
     cout << "8. Выход\n\n";
-    ResetColor();                           // Сброс цвета
-    cout << "Выбор: ";                      // Приглашение к вводу
+    ResetColor();
+    cout << "Выбор: ";
 
-    char choice = _getch();     // Считывание символа без нажатия Enter
-    cout << choice << "\n";     // Вывод выбранного символа на экран
+    char choice = _getch();
+    cout << choice << "\n";
 
-    if (choice < '1' || choice > '8') {     // Если выбран неверный пункт
-        SetTextColor(crt::COLOR_LIGHT_RED); // Установка ярко-красного цвета
-        cout << "Неверный выбор!\n";        // Сообщение об ошибке
-        ResetColor();                       // Сброс цвета
-        _getch();                           // Ожидание нажатия
-        return '0';                         // Возврат нулевого символа
+    if (choice < '1' || choice > '8') {
+        SetTextColor(crt::COLOR_LIGHT_RED);
+        cout << "Неверный выбор!\n";
+        ResetColor();
+        _getch();
+        return '0';
     }
-    return choice;  // Возврат выбранного пункта
+    return choice;
 }
 
-// Функция обработки событий (главный цикл программы)
 void HandleEvents() {
-    char choice = 0;    // Переменная для хранения выбора пользователя
-    while (choice != '8') {         // Цикл до выбора пункта "Выход"
-        choice = MainMenu();        // Показываем меню и получаем выбор
-        switch (choice) {           // Обработка выбора
-        case '1': AddData(); break;                 // Добавление
-        case '2': PrintData(); break;               // Вывод всех
-        case '3': SearchByTicketNumber(); break;    // Поиск по номеру
-        case '4': SearchByLastName(); break;        // Поиск по фамилии
-        case '5': SearchByJoinDate(); break;        // Поиск по дате
-        case '6': DeleteData(); break;              // Удаление
-        case '7':   // Сохранение
-            if (SaveData()) {                       // Если сохранение успешно
-                SetTextColor(crt::COLOR_LIGHT_GREEN);   // Установка ярко-зелёного цвета
-                cout << "\nДанные сохранены!\n";        // Сообщение об успехе
-                ResetColor();                           // Сброс цвета
+    char choice = 0;
+    while (choice != '8') {
+        choice = MainMenu();
+        switch (choice) {
+        case '1': AddData(); break;
+        case '2': PrintData(); break;
+        case '3': SearchByTicketNumber(); break;
+        case '4': SearchByLastName(); break;
+        case '5': SearchByJoinDate(); break;
+        case '6': DeleteData(); break;
+        case '7':
+            if (SaveData()) {
+                SetTextColor(crt::COLOR_LIGHT_GREEN);
+                cout << "\nДанные сохранены!\n";
+                ResetColor();
             }
             else {
-                SetTextColor(crt::COLOR_LIGHT_RED);     // Установка ярко-красного цвета
-                cout << "\nОшибка сохранения!\n";       // Сообщение об ошибке
-                ResetColor();                           // Сброс цвета
+                SetTextColor(crt::COLOR_LIGHT_RED);
+                cout << "\nОшибка сохранения!\n";
+                ResetColor();
             }
-            _getch();   // Ожидание нажатия клавиши
+            _getch();
             break;
-        case '8': break;    // Выход из цикла
-        case '0': break;    // Обработка неверного выбора
+        case '8': break;
+        case '0': break;
         }
     }
 }
 
-// Главная функция программы
 int main() {
-    SetConsoleOutputCP(1251);   // Установка кодировки вывода для Windows (кириллица)
-    SetConsoleCP(1251);         // Установка кодировки ввода для Windows (кириллица)
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
 
-    if (!LOGIN_IN()) {  // Если авторизация не пройдена
-        return 0;       // Завершаем программу
+    if (!LOGIN_IN()) {
+        return 0;
     }
 
-    LoadData();         // Загружаем данные из файла
-    HandleEvents();     // Запускаем главный цикл обработки
-    SaveData();         // Сохраняем данные перед выходом
+    LoadData();
+    HandleEvents();
+    SaveData();
 
-    // Очистка динамической памяти (освобождение всех элементов списка)
     while (firstMember != nullptr) {
-        Member* temp = firstMember;     // Запоминаем указатель на удаляемый элемент
-        firstMember = firstMember->next; // Переходим к следующему элементу
-        delete temp;                    // Освобождаем память
+        Member* temp = firstMember;
+        firstMember = firstMember->next;
+        delete temp;
     }
 
-    return 0;   // Успешное завершение программы
+    return 0;
 }
